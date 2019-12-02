@@ -1,17 +1,17 @@
 package com.ktor1
 
-import io.ktor.application.*
-import io.ktor.response.*
-import io.ktor.request.*
-import io.ktor.routing.*
-import io.ktor.http.*
-import io.ktor.html.*
-import kotlinx.html.*
-import kotlinx.css.*
-import io.ktor.client.*
-import io.ktor.client.engine.apache.*
+import io.ktor.application.Application
+import io.ktor.application.call
+import io.ktor.application.install
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.apache.Apache
 import io.ktor.features.ContentNegotiation
+import io.ktor.http.ContentType
 import io.ktor.jackson.jackson
+import io.ktor.response.respond
+import io.ktor.response.respondText
+import io.ktor.routing.get
+import io.ktor.routing.routing
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
@@ -27,6 +27,7 @@ fun Application.module(testing: Boolean = false) {
 
     //use extension
     course1.setInactive()
+    course3.setInactive()
 
     val client = HttpClient(Apache) {
     }
@@ -39,16 +40,12 @@ fun Application.module(testing: Boolean = false) {
         get("/") {
             call.respondText("Welcome", contentType = ContentType.Text.Plain)
         }
-        get("/top") {
-            call.respond(course3)
-        }
 
         get("/course/{courseNumber}") {
-            val courseNumber = call.parameters["courseNumber"]
-            when (courseNumber) {
+            when (call.parameters["courseNumber"]) {
                 "1" -> call.respond(course1)
                 "2" -> call.respond(course2)
-                "3" -> call.respond(course3)
+                "top", "3" -> call.respond(course3)
                 else -> call.respondText("Error")
             }
         }
