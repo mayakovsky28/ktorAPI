@@ -24,11 +24,14 @@ val course3 = Course(3, "Kotlin for dummies", "medium", true)
 @Suppress("unused") // Referenced in application.conf
 @kotlin.jvm.JvmOverloads
 fun Application.module(testing: Boolean = false) {
+
+    //use extension
+    course1.setInactive()
+
     val client = HttpClient(Apache) {
     }
     install(ContentNegotiation) {
         jackson {
-            // Configure Jackson's ObjectMapper here
         }
     }
 
